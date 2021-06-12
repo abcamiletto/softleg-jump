@@ -1,0 +1,25 @@
+## Namespace of the robot
+namespace: "oneleg"
+
+## Sample time
+T_sample: 0.001
+
+## Number of qbAdvance Motors
+joints_number: 3
+
+## Joints name
+joints_name: 
+ - "ankle"
+ - "knee"
+ - "hip"
+ 
+## Topic names to which publish the references
+ref1_topic_name: 
+ - '/theta_command'
+ - '/theta_command'
+ - '/theta_command'
+
+ref2_topic_name: 
+ - '/null'
+ - '/null'
+ - '/null'

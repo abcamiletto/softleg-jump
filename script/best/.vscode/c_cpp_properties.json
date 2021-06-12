@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/andrea/rob_project/softleg_jump/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/andrea/rob_project/softleg_jump/src/advanced_plugin/include/**",
+        "/home/andrea/rob_project/softleg_jump/src/sea_plugin/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}
