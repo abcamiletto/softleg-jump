@@ -1,0 +1,18 @@
+
+
+- q + limits + max/min
+- qd + limits + max/min
+- qdd + limits + max/min
+- cost_function + area
+- final_term
+- u-q
+- force with ground
+- momentum with ground
+- all boundaries
+- all boundaries on final position
+- v_y
+- v_x
+- px
+- py
+
+
