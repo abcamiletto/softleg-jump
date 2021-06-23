@@ -1,0 +1,74 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{parskip}%
+\usepackage{geometry}%
+\geometry{tmargin=2cm,lmargin=3cm}%
+\usepackage{amsmath}%
+\usepackage{graphicx}%
+%
+\title{Auto{-}generated Report for Softleg Jump}%
+\author{Andrea Boscolo Camiletto e Marco Biasizzo}%
+\date{\today}%
+%
+\begin{document}%
+\normalsize%
+\maketitle%
+\section{Results}%
+\label{sec:Results}%
+The vertical velocity of the leg, at the last timestep, is:%
+\[%
+\boldsymbol{0.0113\,\, m/s}%
+\]%
+Keep in mind that a good value may be between $0.5$ and $2.0 \, m/s$
+
+%
+\section{Cost Function}%
+\label{sec:CostFunction}%
+
+
+\begin{figure}[h!]%
+\centering%
+\includegraphics[width=250px]{/home/andrea/rob_project/softleg_jump/src/softleg-jump/script/trials/trial1/jump/visual/images/cost.png}%
+\caption{Cost Function Analysis}%
+\end{figure}
+
+%
+%
+The values of the cost function and the final term cost are decently balanced, well done.
+
+%
+\pagebreak%
+\section{Joints Behaviour}%
+\label{sec:JointsBehaviour}%
+
+
+\begin{figure}[h!]%
+\centering%
+\includegraphics[width=400px]{/home/andrea/rob_project/softleg_jump/src/softleg-jump/script/trials/trial1/jump/visual/images/joints.png}%
+\caption{Joints Dynamics}%
+\end{figure}
+
+%
+On the figure above you can see on the rows the 3 joints and on the columns its position, velocity and acceleration.
+
+%
+\pagebreak%
+\section{Constraints}%
+\label{sec:Constraints}%
+
+
+\begin{figure}[h!]%
+\centering%
+\includegraphics[width=400px]{/home/andrea/rob_project/softleg_jump/src/softleg-jump/script/trials/trial1/jump/visual/images/constr.png}%
+\caption{Cost Function Analysis}%
+\end{figure}
+
+%
+On the figure above you can see on the rows the different constraint, and on the column their plot per dimension. The titles are based on the configuration you set in the python file.
+
+%
+\end{document}
