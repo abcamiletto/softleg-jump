@@ -101,14 +101,15 @@ def plot_constraints(q, qd, qdd, u, constraints, tgrid, titles):
 
     for idx, constraint in enumerate(constraints):
         ref = lambda q : [np.array([q[0][idx],q[1][idx],q[2][idx]]) for idx in range(len(q[0]))]
-        constr_plot = [constraint(q,qd,u,0, qdd) for q,qd,u,qdd in zip(ref(q), ref(qd), ref(u), ref(qdd))]
+        ref2 = lambda q : [np.array([q[0][idx+1],q[1][idx+1],q[2][idx+1]]) for idx in range(len(q[0])-1)]
+        constr_plot = [constraint(q,qd,u,0, qdd) for q,qd,u,qdd in zip(ref2(q), ref2(qd), ref(u), ref(qdd))]
         low_bound = np.array([instant[0] for instant in constr_plot])
         value = np.array([instant[1] for instant in constr_plot])
         high_bound = np.array([instant[2] for instant in constr_plot])
         if len(value[0]) == 1: # one dim constraint
             ax = fig.add_subplot(gs[idx, :])
             ax.set_facecolor((1.0, 0.5, 0.45))
-            highB = high_bound[0] if high_bound[0] < 9999 else 40
+            highB = high_bound[0] if high_bound[0] < 9999 else high_bound[0]
             ax.axhspan(low_bound[0], highB, facecolor='w')
             ax.plot(tgrid[:-1], low_bound, '-', color='tab:red')
             ax.plot(tgrid[:-1], value, '-')

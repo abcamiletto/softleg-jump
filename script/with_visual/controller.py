@@ -50,7 +50,7 @@ restart_gazebo=rospy.ServiceProxy('/gazebo/reset_simulation',Empty)
 
 # ROBOT SPECIFICATIONS
 robot = {
-    'urdf_path': pathlib.Path(__file__).parent.parent.parent.parent.joinpath('urdf','softleg-light.urdf'),
+    'urdf_path': pathlib.Path(__file__).absolute().parent.parent.parent.joinpath('urdf','softleg-light.urdf'),
     'root': 'foot',
     'end': 'body',
     'sea_damping': dict(leg_J1=0.05, leg_J2=0.05, leg_J3=0.05)

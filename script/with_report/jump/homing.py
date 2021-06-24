@@ -9,14 +9,15 @@ store_path = pathlib.Path(__file__).parent.parent.joinpath('stored_results','hom
 def homing(final_cond, recalc, center_of_mass, robot):
 
     # HOMING PHASE SETTINGS
-    steps=50
-    time_horizon=1
+    steps=20
+    time_horizon=0.5
 
     # HOMING REQUIREMENTS
     target = lambda t : [0]*3
     cost_func = lambda q,qd,u,t: (u-q).T@(u-q)
-    constr1 = lambda q,qd,u,ee,qdd: (-0.1,center_of_mass['pos_x'](q),0.1)
-    final_constr1 = lambda q,qd,u,ee,qdd : (final_cond, u, final_cond)
+    constr1 = lambda q,qd,u,ee,qdd: (-0.05,center_of_mass['pos_x'](q),0.05)
+    constr2 = lambda q, qd, u, ee, qdd: ([-1,-1,-1], u-q, [1,1,1])
+    # final_constr1 = lambda q,qd,u,ee,qdd : (final_cond, u, final_cond)
     final_constr2 = lambda q,qd,u,ee,qdd : (final_cond, q, final_cond)
 
     if recalc:
@@ -27,9 +28,9 @@ def homing(final_cond, recalc, center_of_mass, robot):
             initial_cond = [0]*6,
             trajectory_target = target,
             time_horizon = time_horizon,
-            max_iter = 600,
-            my_constraint = [constr1],
-            my_final_constraint = [final_constr1, final_constr2]
+            max_iter = 2000,
+            my_constraint = [constr1, constr2],
+            my_final_constraint = [final_constr2]
             )
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2.7
 from __future__ import print_function, division, absolute_import, unicode_literals
 from matplotlib import pyplot as plt
 from urdf_optcontrol import optimizer
@@ -16,7 +16,7 @@ def publish_inputs(u, publishers):
         publishers[0].publish(float(ankle))
         publishers[1].publish(float(knee))
         publishers[2].publish(float(hip))
-        rospy.rate(u['rate']).sleep()
+        rospy.Rate(u['rate']).sleep()
 
 def reset_simulation(publishers, restart_function):
     for i in range(3):
@@ -27,7 +27,7 @@ def reset_simulation(publishers, restart_function):
     restart_function()
     time.sleep(0.2)
 
-ros = False
+ros = True
 recalc_homing = False
 recalc_jump = False
 recalc_rehoming = False
@@ -50,7 +50,7 @@ restart_gazebo=rospy.ServiceProxy('/gazebo/reset_simulation',Empty)
 
 # ROBOT SPECIFICATIONS
 robot = {
-    'urdf_path': pathlib.Path(__file__).parent.parent.parent.parent.joinpath('urdf','softleg-light.urdf'),
+    'urdf_path': pathlib.Path(__file__).absolute().parent.parent.parent.joinpath('urdf','softleg-light.urdf'),
     'root': 'foot',
     'end': 'body',
     'sea_damping': dict(leg_J1=0.05, leg_J2=0.05, leg_J3=0.05)
@@ -58,16 +58,17 @@ robot = {
 
 # POSITION AND VELOCITY OF THE CENTER OF THE MASS OF THE ROBOT    
 CoM = {
-    'pos_y': lambda q: 0.1209*cos(q[0])+0.0488*cos(q[0]+q[1])+0.0291*cos(q[0]+q[1]+q[2]),
     'pos_x': lambda q: -0.1209*sin(q[0])-0.0488*sin(q[0]+q[1])-0.0291*sin(q[0]+q[1]+q[2]),
-    'vel_y': lambda q,qd: -0.1209*qd[0]*sin(q[0])-0.0488*(qd[0]+qd[1])*sin(q[0]+q[1])-0.0291*(qd[0]+qd[1]+qd[2])*sin(q[0]+q[1]+q[2]),
+    'pos_y': lambda q: 0.1209*cos(q[0])+0.0488*cos(q[0]+q[1])+0.0291*cos(q[0]+q[1]+q[2]),
     'vel_x': lambda q,qd: -0.1209*qd[0]*cos(q[0])-0.0488*(qd[0]+qd[1])*cos(q[0]+q[1])-0.0291*(qd[0]+qd[1]+qd[2])*cos(q[0]+q[1]+q[2]),
-    'acc_y': lambda q,qd,qdd: -0.0488*(qd[0]+qd[1])**2*cos(q[0]+q[1]) -0.0488*(qdd[0]+qdd[1])*sin(q[0]+q[1]) -0.0291*(qd[0]+qd[1]+qd[2])**2*cos(q[0]+q[1]+q[2]) -0.0291*(qdd[0]+qdd[1]+qdd[2])**2*sin(q[0]+q[1]+q[2]) -0.1209*sin(q[0])*qdd[0] -0.1209*cos(q[0])*(qd[0])**2,
-    'acc_x': lambda q,qd,qdd: 0.0488*(qd[0]+qd[1])**2*sin(q[0]+q[1]) -0.0488*(qdd[0]+qdd[1])*cos(q[0]+q[1]) +0.0291*(qd[0]+qd[1]+qd[2])**2*sin(q[0]+q[1]+q[2]) -0.0291*(qdd[0]+qdd[1]+qdd[2])**2*cos(q[0]+q[1]+q[2]) +0.1209*sin(q[0])*(qd[0])**2 -0.1209*cos(q[0])*qdd[0]
+    'vel_y': lambda q,qd: -0.1209*qd[0]*sin(q[0])-0.0488*(qd[0]+qd[1])*sin(q[0]+q[1])-0.0291*(qd[0]+qd[1]+qd[2])*sin(q[0]+q[1]+q[2]),
+    'acc_x': lambda q,qd,qdd: 0.0488*(qd[0]+qd[1])**2*sin(q[0]+q[1]) -0.0488*(qdd[0]+qdd[1])*cos(q[0]+q[1]) +0.0291*(qd[0]+qd[1]+qd[2])**2*sin(q[0]+q[1]+q[2]) -0.0291*(qdd[0]+qdd[1]+qdd[2])*cos(q[0]+q[1]+q[2]) +0.1209*sin(q[0])*(qd[0])**2 -0.1209*cos(q[0])*qdd[0],
+    'acc_y': lambda q,qd,qdd: -0.0488*(qd[0]+qd[1])**2*cos(q[0]+q[1]) -0.0488*(qdd[0]+qdd[1])*sin(q[0]+q[1]) -0.0291*(qd[0]+qd[1]+qd[2])**2*cos(q[0]+q[1]+q[2]) -0.0291*(qdd[0]+qdd[1]+qdd[2])*sin(q[0]+q[1]+q[2]) -0.1209*sin(q[0])*qdd[0] -0.1209*cos(q[0])*(qd[0])**2
 }
+
 def p_zero_mom(q,qd,qdd,m=3.2,g=9.81):
     F = m*(g+CoM['acc_y'](q,qd,qdd))
-    return (F*CoM['pos_x'](q)-m*CoM['acc_y'](q,qd,qdd)*CoM['pos_y'](q))/F
+    return CoM['pos_x'](q)-(m*CoM['acc_y'](q,qd,qdd)*CoM['pos_y'](q))/F
 CoM['p_zero_mom'] = p_zero_mom
 
 # INITIAL POSE AND VELOCITY
@@ -111,7 +112,8 @@ if ros:
     for i in range(100):
 
         publish_inputs(u_jump, publishers)
-        time.sleep(0.05)
+        # pause_gazebo()
+        time.sleep(0.2)
 
         publish_inputs(u_rehome, publishers)
         time.sleep(1.0)
