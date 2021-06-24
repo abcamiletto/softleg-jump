@@ -14,7 +14,7 @@ def visualize(jump, cost_func, final_term, constraints, desc, final_constr, fina
     plt.close("all")
     state, settings = decode_input(jump)
     fcon, fres, warning = main_plot(**state, **settings, cost_func=cost_func, final_term=final_term, constraints=constraints, desc=desc, final_constr=final_constr, final_desc=final_desc, CoM=CoM)
-    generate_pdf(fres, warning)
+    generate_pdf(fres, warning, fcon, jump['t'], jump['steps'])
     plt.close("all")
 
 def main_plot(q,qd,qdd,u,t,steps, cost_func, final_term, constraints, desc, final_constr, final_desc, CoM):
@@ -101,16 +101,26 @@ def plot_constraints(q, qd, qdd, u, constraints, tgrid, titles):
 
     for idx, constraint in enumerate(constraints):
         ref = lambda q : [np.array([q[0][idx],q[1][idx],q[2][idx]]) for idx in range(len(q[0]))]
-        ref2 = lambda q : [np.array([q[0][idx+1],q[1][idx+1],q[2][idx+1]]) for idx in range(len(q[0])-1)]
-        constr_plot = [constraint(q,qd,u,0, qdd) for q,qd,u,qdd in zip(ref2(q), ref2(qd), ref(u), ref(qdd))]
+        constr_plot = [constraint(q,qd,u,0, qdd) for q,qd,u,qdd in zip(ref(q), ref(qd), ref(u), ref(qdd))]
         low_bound = np.array([instant[0] for instant in constr_plot])
         value = np.array([instant[1] for instant in constr_plot])
         high_bound = np.array([instant[2] for instant in constr_plot])
         if len(value[0]) == 1: # one dim constraint
             ax = fig.add_subplot(gs[idx, :])
             ax.set_facecolor((1.0, 0.5, 0.45))
-            highB = high_bound[0] if high_bound[0] < 9999 else high_bound[0]
-            ax.axhspan(low_bound[0], highB, facecolor='w')
+
+            max_acc = value.max()
+            def get_figure_max(real_high, max_acc):
+                if real_high < 999:
+                    return real_high
+                else:
+                    if max_acc > 3:
+                        return max_acc * 1.2
+                    else:
+                        return 20
+            high_b = get_figure_max(high_bound[0], max_acc)
+
+            ax.axhspan(low_bound[0], high_b, facecolor='w')
             ax.plot(tgrid[:-1], low_bound, '-', color='tab:red')
             ax.plot(tgrid[:-1], value, '-')
             ax.plot(tgrid[:-1], high_bound, '-', color='tab:red')
@@ -138,7 +148,7 @@ def eval_final_constr(q, qd, qdd, u, fconstr, info):
     results = []
     for fcon in fconstr:
         results.append(fcon(qf,qdf,u,0,qddf))
-    return results
+    return results, info
 
 def eval_results(q, qd, qdd, u, CoM):
     get_last = lambda x: np.array([x[0][-1],x[1][-1],x[2][-1]])

@@ -9,6 +9,8 @@
 \geometry{tmargin=2cm,lmargin=3cm}%
 \usepackage{amsmath}%
 \usepackage{graphicx}%
+\usepackage{ragged2e}%
+\usepackage{multirow}%
 %
 \title{Auto{-}generated Report for Softleg Jump}%
 \author{Andrea Boscolo Camiletto e Marco Biasizzo}%
@@ -17,11 +19,17 @@
 \begin{document}%
 \normalsize%
 \maketitle%
+\section{Settings of the problem}%
+\label{sec:Settingsoftheproblem}%
+The problem to be solved is the jumping procedure of a SEA based leg.%
+The time horizon is 0.04 sec, with a number of steps of 25. That results in an open loop control at 625.0 Hz.
+
+%
 \section{Results}%
 \label{sec:Results}%
 The vertical velocity of the leg, at the last timestep, is:%
 \[%
-\boldsymbol{1.6412\,\, m/s}%
+\boldsymbol{1.7292\,\, m/s}%
 \]%
 Keep in mind that a good value may be between $0.5$ and $2.0 \, m/s$
 
@@ -32,7 +40,7 @@ Keep in mind that a good value may be between $0.5$ and $2.0 \, m/s$
 
 \begin{figure}[h!]%
 \centering%
-\includegraphics[width=250px]{/home/marco/catkin_ws/src/softleg-jump/script/with_report/jump/visual/images/cost.png}%
+\includegraphics[width=250px]{/home/andrea/rob_project/softleg_jump/src/softleg-jump/script/with_report/jump/visual/images/cost.png}%
 \caption{Cost Function Analysis}%
 \end{figure}
 
@@ -42,13 +50,33 @@ The values of the cost function and the final term cost are decently balanced, w
 
 %
 \pagebreak%
+\section{Final Constraints}%
+\label{sec:FinalConstraints}%
+\begin{center}%
+\begin{tabular}{c|c|c|c}%
+\hline%
+\multicolumn{4}{|c|}{Final Constraints Evaluation}\\%
+\hline%
+Constraint&Lower Bound&End Result&Upper Bound\\%
+\hline%
+&&&\\%
+\multirow{1}{*}{vel\_x of CoM}&{-}0.0&{-}0.0&0.0\\%
+\hline%
+\multirow{1}{*}{pos\_x of CoM}&{-}0.0&{-}0.0&0.0\\%
+\hline%
+\multirow{1}{*}{vertical tip 1}&{-}0.0&0.0&0.0\\%
+\hline%
+\end{tabular}%
+\end{center}
+
+%
 \section{Joints Behaviour}%
 \label{sec:JointsBehaviour}%
 
 
 \begin{figure}[h!]%
 \centering%
-\includegraphics[width=400px]{/home/marco/catkin_ws/src/softleg-jump/script/with_report/jump/visual/images/joints.png}%
+\includegraphics[width=400px]{/home/andrea/rob_project/softleg_jump/src/softleg-jump/script/with_report/jump/visual/images/joints.png}%
 \caption{Joints Dynamics}%
 \end{figure}
 
@@ -63,7 +91,7 @@ On the figure above you can see on the rows the 3 joints and on the columns its 
 
 \begin{figure}[h!]%
 \centering%
-\includegraphics[width=400px]{/home/marco/catkin_ws/src/softleg-jump/script/with_report/jump/visual/images/constr.png}%
+\includegraphics[width=400px]{/home/andrea/rob_project/softleg_jump/src/softleg-jump/script/with_report/jump/visual/images/constr.png}%
 \caption{Cost Function Analysis}%
 \end{figure}
 

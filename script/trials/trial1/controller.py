@@ -29,7 +29,7 @@ def reset_simulation(publishers, restart_function):
 
 ros = False
 recalc_homing = False
-recalc_jump = False
+recalc_jump = True
 recalc_rehoming = False
 
 filepath = pathlib.Path(__file__).parent

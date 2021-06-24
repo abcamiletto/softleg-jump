@@ -1,15 +1,15 @@
 import pathlib
-from pylatex import Document, Section, Subsection, Tabular, Math, Figure, NoEscape, Command, MultiColumn, MultiRow
+from typing_extensions import final
+from pylatex import Document, Section, Subsection, Tabular, Math, Figure, NoEscape, Command, MultiColumn, MultiRow, Center
 from pylatex.utils import italic, bold
 import pylatex.config as cf
 import webbrowser
 
-def generate_pdf(com, warning):
+def generate_pdf(com, warning, final_constraints, t, steps):
     cf.active = cf.Version1(indent=False)
     filepath = pathlib.Path(__file__).parent
     imagespath = filepath.joinpath('images')
     reportpath = filepath.joinpath('report')
-    space = NoEscape('\,\,')
 
     geometry_options = {"tmargin": "2cm", "lmargin": "3cm"}
     doc = Document(geometry_options=geometry_options)
@@ -19,6 +19,9 @@ def generate_pdf(com, warning):
     doc.preamble.append(Command('date', NoEscape(r'\today')))
     doc.append(NoEscape(r'\maketitle'))
 
+    with doc.create(Section('Settings of the problem')):
+        doc.append('The problem to be solved is the jumping procedure of a SEA based leg.')
+        doc.append('The time horizon is ' + str(t) + ' sec, with a number of steps of ' + str(steps) + '. That results in an open loop control at ' + str(round(steps/t,1)) +' Hz.')
 
     with doc.create(Section('Results')):
         doc.append('The vertical velocity of the leg, at the last timestep, is:')
@@ -36,23 +39,37 @@ def generate_pdf(com, warning):
             doc.append('The values of the cost function and the final term cost are decently balanced, well done.')
     doc.append(NoEscape(r'\pagebreak'))
 
-    # with doc.create(Section('Final Constraints')):
-    #     with doc.create(Tabular('|c|c|c|c|')) as table:
-    #         table.add_hline()
-    #         table.add_row()
-    #         table.add_hline(1, 2)
-    #         table.add_empty_row()
-    #         table.add_row((4, 5, 6, 7))
+    fconstraints, info = final_constraints
+    with doc.create(Section('Final Constraints')):
+        with doc.create(Center()) as centered:
+            with doc.create(Tabular('c|c|c|c')) as table:
+                table.add_hline()
+                table.add_row((MultiColumn(4, align='|c|', data='Final Constraints Evaluation'),))
+                table.add_hline()
+                table.add_row(('Constraint', 'Lower Bound', 'End Result', 'Upper Bound'))
+                table.add_hline()
+                table.add_empty_row()
+                for idx, constr in enumerate(fconstraints):
+                    description = info[idx]
+                    lenght = len(constr[0])
+                    fixed_constr = [ x for x in constr]
+                    for idx, single in enumerate(fixed_constr):
+                        try:
+                            iter(single)
+                        except TypeError:
+                            fixed_constr[idx] = [constr[idx]]
+                    for counter, (low, val, up) in enumerate(zip(fixed_constr[0], fixed_constr[1], fixed_constr[2])):
+                        try:
+                            iter(val)
+                            val = val[0]
+                        except TypeError:
+                            pass
+                        if counter == 0:
+                            table.add_row((MultiRow(lenght, data=description), round(low,4), round(val,4), round(up,4)))
+                        else: 
+                            table.add_row(('',  round(low,4), round(val,4), round(up,4)))
+                    table.add_hline()          
 
-
-# table3 = Tabular('|c|c|c|')
-# table3.add_hline()
-# table3.add_row((MultiColumn(2, align='|c|',
-#                             data=MultiRow(2, data='multi-col-row')), 'X'))
-# table3.add_row((MultiColumn(2, align='|c|', data=''), 'X'))
-# table3.add_hline()
-# table3.add_row(('X', 'X', 'X'))
-# table3.add_hline()
 
     with doc.create(Section('Joints Behaviour')):
         with doc.create(Figure(position='h!')) as joints:
