@@ -29,7 +29,7 @@ def reset_simulation(publishers, restart_function):
 
 ros = False
 recalc_homing = False
-recalc_jump = True
+recalc_jump = False
 recalc_rehoming = False
 
 filepath = pathlib.Path(__file__).parent
@@ -100,9 +100,6 @@ u_rehome = rehoming(initial_cond=initial_cond,
                     robot=robot
 )
 
-print('\nFinal v_y: ', CoM['vel_y'](qf,qdf), 'm/s')
-print('Final v_x: ', CoM['vel_x'](qf,qdf), 'm/s')
-print('Final pos_x: ', CoM['pos_x'](qf)*100, 'cm')
 
 if ros:
     reset_simulation(publishers, restart_gazebo)

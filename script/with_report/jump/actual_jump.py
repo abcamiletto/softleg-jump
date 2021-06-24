@@ -24,16 +24,16 @@ def jumping(initial_cond, recalc, center_of_mass, robot):
     constraint2 = lambda q, qd, u, ee, qdd: ([-3,-3,-3], u, [3,3,3])
     constraint3 = lambda q, qd, u, ee, qdd: ([-1,-1,-1], u-q, [1,1,1])
     constraint4 = lambda q, qd, u, ee, qdd: ([-9], center_of_mass['acc_y'](q,qd,qdd), [np.inf])
-    constraint5 = lambda q, qd, u, ee, qdd: ([-0.8], center_of_mass['p_zero_mom'](q,qd,qdd), [0.8])
+    constraint5 = lambda q, qd, u, ee, qdd: ([-0.1], center_of_mass['p_zero_mom'](q,qd,qdd), [0.1])
     my_constraints = [constraint1,constraint2,constraint3,constraint4,constraint5]
     constr_info = ['Constraints on q', 'Constraints on u', 'Constraints on u-q', 'Constraints on acc_y', 'Constraints on P_zero_mom']
 
     final_constraint1 = lambda q, qd, u, ee, qdd: ([-0.0], center_of_mass['vel_x'](q,qd), [0.0])
     final_constraint2 = lambda q, qd, u, ee, qdd: ([-0.0], center_of_mass['pos_x'](q), [0.0])
     final_constraint3 = lambda q, qd, u, ee, qdd: ([-0.0], q[0]+q[1]+q[2], [0.0])
-    # final_constraint4 = lambda q, qd, u, ee, qdd: ([-0.5]*3, q, [0.5]*3)
+    final_constraint4 = lambda q, qd, u, ee, qdd: ([-0.5]*3, q, [0.5]*3)
     my_final_constraints = [final_constraint1, final_constraint2, final_constraint3]  
-    final_constr_info = ['vel_x of CoM', 'pos_x of CoM', 'vertical tip 1' ] #, 'vertical tip 2']
+    final_constr_info = ['vel_x of CoM', 'pos_x of CoM', 'absolute angle of last joint', 'sensible final position']
 
     if recalc:
         optimizer.load_robot(robot['urdf_path'], robot['root'], robot['end'], sea_damping=robot['sea_damping'])
