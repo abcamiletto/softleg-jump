@@ -10,14 +10,15 @@ store_path = pathlib.Path(__file__).parent.parent.joinpath('stored_results','reh
 def rehoming(initial_cond, final_cond, recalc, center_of_mass, robot):
 
     # HOMING PHASE SETTINGS
-    steps=50
-    time_horizon=0.8
+    steps=40
+    time_horizon=1.0
 
     # HOMING REQUIREMENTS
     target = lambda t : [0]*3
     cost_func = lambda q,qd,u,t: qd.T@qd
-    constr1 = lambda q,qd,u,ee,qdd: (-0.1, center_of_mass['pos_x'](q),0.1)
-    final_constr1 = lambda q,qd,u,ee,qdd : (final_cond, u, final_cond)
+    constr1 = lambda q,qd,u,ee,qdd: (-0.05, center_of_mass['pos_x'](q),0.05)
+    constr2 = lambda q, qd, u, ee, qdd: ([-1,-1,-1], u-q, [1,1,1])
+    # final_constr1 = lambda q,qd,u,ee,qdd : (final_cond, u, final_cond)
     final_constr2 = lambda q,qd,u,ee,qdd : (final_cond, q, final_cond)
 
     if recalc:
@@ -29,18 +30,16 @@ def rehoming(initial_cond, final_cond, recalc, center_of_mass, robot):
             trajectory_target = target,
             time_horizon = time_horizon,
             max_iter=600,
-            my_constraint=[constr1],
-            my_final_constraint=[final_constr1, final_constr2]
+            my_constraint=[constr1, constr2],
+            my_final_constraint=[final_constr2]
             )
-        fig = optimizer.show_result()
 
         #SAVING REHOME PHASE RESULTS
         u_rehome = {
             'ankle': np.array(res['u'][0]),
             'knee': np.array(res['u'][1]),
             'hip': np.array(res['u'][2]),
-            'rate': rospy.Rate(steps/time_horizon),
-            'plots': fig,
+            'rate': steps/time_horizon,
             'q': res['q'],
             'qd': res['qd']
         }

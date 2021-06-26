@@ -215,7 +215,7 @@
     <plugin filename="libsea_plugin.so" name="leg_sea_1">
       <joint>ankle</joint>
       <namespace>oneleg</namespace>
-      <stiffness>20</stiffness>
+      <stiffness>30</stiffness>
       <pub_eltau>false</pub_eltau>
       <pub_state>true</pub_state>
       <sub_ext_tau>false</sub_ext_tau>
@@ -225,7 +225,7 @@
     <plugin filename="libsea_plugin.so" name="leg_sea_2">
       <joint>knee</joint>
       <namespace>oneleg</namespace>
-      <stiffness>20</stiffness>
+      <stiffness>30</stiffness>
       <pub_eltau>false</pub_eltau>
       <pub_state>true</pub_state>
       <sub_ext_tau>false</sub_ext_tau>
@@ -235,7 +235,7 @@
     <plugin filename="libsea_plugin.so" name="leg_sea_3">
       <joint>hip</joint>
       <namespace>oneleg</namespace>
-      <stiffness>20</stiffness>
+      <stiffness>30</stiffness>
       <pub_eltau>false</pub_eltau>
       <pub_state>true</pub_state>
       <sub_ext_tau>false</sub_ext_tau>
